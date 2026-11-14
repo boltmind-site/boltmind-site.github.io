@@ -6,7 +6,7 @@ const locales={pt:'pt-BR',en:'en-US',pl:'pl-PL',el:'el-GR',de:'de-DE',fr:'fr-FR'
 let stored;try{stored=localStorage.getItem('boltmind-language');}catch{}
 let lang=translations[stored]?stored:'en',tab=0,platform='desktop';
 let pricing={BRL:100,USD:20};
-const desktopShots=['automacoes','personagem','geral','ranking','missoes','missoes-especiais','treinos','duelos','esconderijo','comodos','eventos','diagnostico'];
+const desktopShots=['automacoes','personagem','geral','ranking','missoes','missoes-especiais','treinos','duelos','esconderijo','comodos-planta','eventos','diagnostico'];
 const androidShots=['overview','ranking','missions','special','training','duels','hideout','events','inventory','automation','history'];
 const q=s=>document.querySelector(s);
 function element(tag,text,cls){const el=document.createElement(tag);if(text!==undefined)el.textContent=text;if(cls)el.className=cls;return el;}
@@ -21,12 +21,25 @@ function showPrice(){
  document.querySelectorAll('.price-card .checkout-payhip .checkout-price').forEach(el=>el.textContent=t.payhipPrice);
 }
 function galleryTabs(){return platform==='desktop'?window.BOLTMIND_TABS[lang]:window.BOLTMIND_PLATFORM_COPY[lang].mobileTabs;}
-function shotPath(i){const names=platform==='desktop'?desktopShots:androidShots;const ext=platform==='desktop'?'png':'jpg';return 'assets/screenshots/'+platform+'/'+names[i]+'.'+ext+'?v='+(platform==='desktop'?'20261107':'20260929');}
+function shotPath(i){const names=platform==='desktop'?desktopShots:androidShots;const rooms=platform==='desktop'&&names[i]==='comodos-planta';const ext=platform==='desktop'?(rooms?'webp':'png'):'jpg';return 'assets/screenshots/'+platform+'/'+names[i]+'.'+ext+'?v='+(rooms?'20261114':platform==='desktop'?'20261107':'20260929');}
+function zoomImage(image){q('#zoom-image').src=image.src;q('#zoom-image').alt=image.alt;q('#image-dialog').showModal();}
+function roomShots(on){
+ const box=q('#room-shots');box.replaceChildren();box.hidden=!on;if(!on)return;
+ const copy=window.BOLTMIND_PLATFORM_COPY[lang];
+ for(const [file,label] of [['fila',copy.roomsQueue],['andares',copy.roomsFloors]]){
+  const button=element('button',undefined,'room-shot');button.type='button';
+  const img=document.createElement('img');img.src='assets/screenshots/desktop/comodos-'+file+'.webp?v=20261114';
+  img.alt=copy.pc+' - '+galleryTabs()[tab]+' - '+label;img.width=1484;img.height=1002;img.loading='lazy';
+  button.append(img,element('span',label));button.addEventListener('click',()=>zoomImage(img));box.append(button);
+ }
+}
 function changeTab(i){
  tab=i;
  const img=q('#gallery-image');img.src=shotPath(i);img.alt=(platform==='desktop'?window.BOLTMIND_PLATFORM_COPY[lang].pc:window.BOLTMIND_PLATFORM_COPY[lang].android)+' - '+galleryTabs()[i];
- img.width=platform==='desktop'?1440:1600;img.height=platform==='desktop'?960:738;
- q('#gallery-caption').textContent=platform==='android'?window.BOLTMIND_PLATFORM_COPY[lang].mobileCaption:window.BOLTMIND_PLATFORM_COPY[lang].desktopCaption;
+ const rooms=platform==='desktop'&&desktopShots[i]==='comodos-planta';
+ img.width=platform==='desktop'?(rooms?1484:1440):1600;img.height=platform==='desktop'?(rooms?1002:960):738;
+ q('#gallery-caption').textContent=platform==='android'?window.BOLTMIND_PLATFORM_COPY[lang].mobileCaption:(rooms?window.BOLTMIND_PLATFORM_COPY[lang].roomsCaption:window.BOLTMIND_PLATFORM_COPY[lang].desktopCaption);
+ roomShots(rooms);
  document.querySelectorAll('#screenshot-tabs button').forEach((b,n)=>{b.setAttribute('aria-selected',String(n===i));b.tabIndex=n===i?0:-1;});
 }
 function renderGallery(){

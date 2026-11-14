@@ -269,3 +269,11 @@ body{background:var(--nv-bg);color:var(--nv-text)}
 #sense-tutorial .tutorial-foot{display:flex;justify-content:center;margin-top:20px}
 #image-dialog{z-index:2}
 @media(max-width:720px){#sense-tutorial{padding:0 16px 20px}#sense-tutorial .step{grid-template-columns:1fr;padding:15px}#sense-tutorial .help{grid-template-columns:1fr}#sense-tutorial .close-dialog{margin-right:-4px}}
+/* Hideout - Rooms tab: floor plan on top, queue and floors as supporting shots (2026-11-14). */
+.room-shots{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:1000px;margin:16px auto 0}
+.room-shots[hidden]{display:none}
+.room-shot{display:flex;flex-direction:column;padding:0;overflow:hidden;border:1px solid #2a3142;border-radius:14px;background:var(--bm-panel);color:var(--bm-soft);font:inherit;text-align:left;cursor:zoom-in;box-shadow:0 18px 50px #0007}
+.room-shot:hover,.room-shot:focus-visible{border-color:var(--bm-cyan);color:#fff}
+.room-shot img{display:block;width:100%;height:auto}
+.room-shot span{padding:11px 14px;font-size:13px;font-weight:600}
+@media(max-width:720px){.room-shots{grid-template-columns:1fr}}
